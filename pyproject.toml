@@ -5,7 +5,7 @@ description = "Version Source for FortiGates for MacPyVer."
 authors = ["Daryl Stark <daryl@dstark.nl>"]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "Version Source for FortiGates for MacPyVer", from = "src" }]
+packages = [{ include = "macpyver_fortigate_source", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -49,7 +49,7 @@ push = false
 
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
-"src/Version Source for FortiGates for MacPyVer/__init__.py" = ["{version}"]
+"src/macpyver_fortigate_source/__init__.py" = ["{version}"]
 
 [tool.pytest.ini_options]
-addopts = ['--cov=Version Source for FortiGates for MacPyVer', '--cov-report=html', '--cov-report=lcov']
+addopts = ['--cov=macpyver_fortigate_source', '--cov-report=html', '--cov-report=lcov']
