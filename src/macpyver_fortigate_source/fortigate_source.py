@@ -39,6 +39,9 @@ class FortiGateSource(VersionSource):
             f"{self._access_token}",
             verify=False,
             timeout=10)
+        
+        only_mature = self.software.extra_information.get(
+            'fortigate_only_mature', False)
 
         if response.status_code == 200:
             try:
@@ -50,5 +53,7 @@ class FortiGateSource(VersionSource):
                 return [
                     Version(version=version['version'])
                     for version in versions
+                    if ((only_mature and version['maturity'] == 'M') or
+                        (not only_mature))
                 ]
         raise FortiGateAPIError('Failed to retrieve FortiGate OS version.')
