@@ -29,9 +29,12 @@ class FortiGateSource(VersionSource):
 
     def get_all_versions(self) -> list[Version]:
         """Get all versions from the FortiGate API.
-        
+
         Returns:
             A list of Version objects from the FortiGate API.
+
+        Raises:
+            FortiGateAPIError: on a API error.
         """
         response = requests.get(
             f"https://{self._hostname}" +
@@ -39,7 +42,7 @@ class FortiGateSource(VersionSource):
             f"{self._access_token}",
             verify=False,
             timeout=10)
-        
+
         only_mature = self.software.extra_information.get(
             'fortigate_only_mature', False)
 
@@ -47,13 +50,13 @@ class FortiGateSource(VersionSource):
             try:
                 versions = response.json()['results']['available']
                 versions.extend([response.json()['results']['current']])
-            except KeyError:
-                raise FortiGateAPIError('Wrong API response')
-            else:
-                return [
-                    Version(version=version['version'])
-                    for version in versions
-                    if ((only_mature and version['maturity'] == 'M') or
-                        (not only_mature))
-                ]
+            except KeyError as exc:
+                raise FortiGateAPIError('Wrong API response') from exc
+
+            return [
+                Version(version=version['version'])
+                for version in versions
+                if ((only_mature and version['maturity'] == 'M') or
+                    (not only_mature))
+            ]
         raise FortiGateAPIError('Failed to retrieve FortiGate OS version.')
